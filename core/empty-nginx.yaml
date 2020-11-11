@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: empty-nginx
+  labels:
+    app: myapp
+spec:
+  containers:
+  - image: nginx
+    name: empty-nginx
+    ports:
+    - containerPort: 80
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
