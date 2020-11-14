@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-configmap-volume-pod
+  labels:
+    app: lab2
+spec:
+  containers:
+  - image: busybox
+    name: my-configmap-volume-container
+    command: ['sh' , '-c' , 'echo $(cat /etc/config/key_1) && sleep 3600']
+    volumeMounts:
+    - name: config-volume
+      mountPath: /etc/config
+  volumes:
+  - name: config-volume
+    configMap:
+      name: my-config-map
+      items:
+      - key: key1
+        path: key_1
+      - key: key2
+        path: key_2
