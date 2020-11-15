@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-probes
+  labels:
+    app: observability
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx
+      readinessProbe:
+        httpGet:
+          path: /50x.html
+          port: 80
+        initialDelaySeconds: 1
+        periodSeconds: 3
+      livenessProbe:
+        httpGet:
+          path: /index.html
+          port: 80
+        initialDelaySeconds: 1
+        periodSeconds: 3      
