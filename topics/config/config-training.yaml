@@ -19,7 +19,7 @@ kind: Pod
 metadata:
   name: lab2-pod
   labels:
-    app: lab2
+    app: config-training
 spec:
   restartPolicy: Never
   securityContext:
