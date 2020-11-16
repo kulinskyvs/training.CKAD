@@ -23,7 +23,7 @@ spec:
    - protocol: TCP
      nodePort: 30001
      port: 8080
-     targetPort: 80     
+     targetPort: http
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -44,6 +44,7 @@ spec:
           image: nginx
           ports:
             - containerPort: 80
+              name: http
 ---
 # just to be able to test the inter-cluster service working with curl
 apiVersion: apps/v1
