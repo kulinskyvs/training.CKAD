@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - image: nginx
+          name: nginx
+          ports:
+            - containerPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secure-curl-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: curl
+  template:
+    metadata:
+      labels:
+        app: curl
+        secure: "true"
+    spec:
+      containers:
+        - image: yauritux/busybox-curl        
+          name: curl
+          command: ["sh", "-c", "sleep 3600"]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insecure-curl-deployment
+spec:
+  replicas: 1
+  selector:
+    matchExpressions:
+      - {key: app, operator: In, values: ["curl"]}
+      - {key: secure, operator: NotIn, values: ["true"]}
+  template:
+    metadata:
+      labels:
+        app: curl
+    spec:
+      containers:
+        - image: yauritux/busybox-curl        
+          name: curl
+          command: ["sh", "-c", "sleep 3600"]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: secure-nginx-ingress
+spec:
+  podSelector:
+    matchLabels:
+      app: nginx
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              secure: "true"
+      ports:
+        - protocol: TCP
+          port: 80
+  

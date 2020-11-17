@@ -1,0 +1,3 @@
+k3d cluster create dev --agents 2 --api-port 6550 -p "30000-32767:30000-32767@server[0]" -p "8999:80@loadbalancer"
+
+k3d cluster create dev --agents 2 --api-port 6550 -p "30000-32767:30000-32767@server[0]" -p "8999:80@loadbalancer" --k3s-server-arg '--flannel-backend=none' --volume "/opt/kubenetes/k3d/calico.yaml:/var/lib/rancher/k3s/server/manifests/calico.yaml"
