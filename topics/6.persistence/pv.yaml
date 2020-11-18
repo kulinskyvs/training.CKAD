@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-storage
+spec:
+  storageClassName: local
+  capacity:
+    storage: 10M
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: local-storage-claim-s
+spec:
+  storageClassName: local
+  resources:
+    requests: 
+      storage: 5M
+  accessModes:
+    - ReadWriteOnce
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: local-storage-claim-m
+spec:
+  storageClassName: local
+  resources:
+    requests: 
+      storage: 6M
+  accessModes:
+    - ReadWriteOnce
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-with-local-claim-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pv
+  template:
+    metadata:
+      labels:
+        app: pv
+    spec:
+      containers:
+        - name: main
+          image: busybox
+          command: ["sh", "-c", "sleep 3600"]
+          volumeMounts:
+            - name: local-pv
+              mountPath: /data
+      volumes:
+        - name: local-pv
+          persistentVolumeClaim:
+            claimName: local-storage-claim-s
